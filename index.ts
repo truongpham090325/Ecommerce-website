@@ -1,5 +1,8 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import path from "path";
+import adminRoutes from "./routes/admin/index.route";
+import clientRoutes from "./routes/client/index.route";
+
 const app = express();
 const port = 3000;
 
@@ -10,17 +13,8 @@ app.set("view engine", "pug"); // Thiết lập Pug làm view engine
 // Thiết lập thư mục chứa file tĩnh
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req: Request, res: Response) => {
-  res.render("client/pages/home", {
-    pageTitle: "Trang chủ",
-  });
-});
-
-app.get("/admin/dashboard", (req: Request, res: Response) => {
-  res.render("admin/pages/dashboard", {
-    pageTitle: "Tổng quan",
-  });
-});
+app.use("/admin", adminRoutes);
+app.use("/", clientRoutes);
 
 app.listen(port, () => {
   console.log(`Website đang chạy trên cổng ${port}`);
