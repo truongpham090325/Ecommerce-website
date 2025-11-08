@@ -16,6 +16,12 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
+app.get("/admin/dashboard", (req: Request, res: Response) => {
+  res.render("admin/pages/dashboard", {
+    pageTitle: "Tổng quan",
+  });
+});
+
 app.listen(port, () => {
   console.log(`Website đang chạy trên cổng ${port}`);
 });
