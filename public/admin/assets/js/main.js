@@ -1,3 +1,17 @@
+// Khởi tạo TinyMCE
+const initialTinyMCE = () => {
+  tinymce.init({
+    selector: "[textarea-mce]",
+    plugins:
+      "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
+    toolbar:
+      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
+  });
+};
+
+initialTinyMCE();
+// Hết khởi tạo TinyMCE
+
 // Notify
 var notyf = new Notyf({
   duration: 2000,
@@ -53,7 +67,7 @@ if (articleCreateCategoryForm) {
       const slug = event.target.slug.value;
       const parent = event.target.parent.value;
       const status = event.target.status.value;
-      const description = event.target.description.value;
+      const description = tinymce.get("description").getContent();
 
       // Tạo form data
       const formData = new FormData();
@@ -62,6 +76,7 @@ if (articleCreateCategoryForm) {
       formData.append("parent", parent);
       formData.append("status", status);
       formData.append("description", description);
+
       fetch(`/${pathAdmin}/article/category/create`, {
         method: "POST",
         body: formData,
