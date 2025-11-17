@@ -42,14 +42,22 @@ if (articleCreateCategoryForm) {
         errorMessage: "Vui lòng nhập tên danh mục!",
       },
     ])
+    .addField("#slug", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập tên đường dẫn!",
+      },
+    ])
     .onSuccess((event) => {
       const name = event.target.name.value;
+      const slug = event.target.slug.value;
       const parent = event.target.parent.value;
       const description = event.target.description.value;
 
       // Tạo form data
       const formData = new FormData();
       formData.append("name", name);
+      formData.append("slug", slug);
       formData.append("parent", parent);
       formData.append("description", description);
       fetch(`/${pathAdmin}/article/category/create`, {
@@ -71,3 +79,38 @@ if (articleCreateCategoryForm) {
     });
 }
 // End articleCreateCategoryForm
+
+// btn-generate-slug
+const buttonGenerateSlug = document.querySelector("[btn-generate-slug]");
+if (buttonGenerateSlug) {
+  buttonGenerateSlug.addEventListener("click", () => {
+    const modelName = buttonGenerateSlug.getAttribute("btn-generate-slug");
+    const from = buttonGenerateSlug.getAttribute("from");
+    const to = buttonGenerateSlug.getAttribute("to");
+    const string = document.querySelector(`[name="${from}"]`).value;
+
+    const dataFinal = {
+      string: string,
+      modelName: modelName,
+    };
+
+    fetch(`/${pathAdmin}/helper/generate-slug`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(dataFinal),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code == "error") {
+          notyf.error(data.message);
+        }
+
+        if (data.code == "success") {
+          document.querySelector(`[name="${to}"]`).value = data.slug;
+        }
+      });
+  });
+}
+// End btn-generate-slug

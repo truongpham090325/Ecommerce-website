@@ -15,6 +15,9 @@ const port = 3000;
 // Kết nối CSDL
 connectDB();
 
+// Cho phép gửi data lên dạng json
+app.use(express.json());
+
 // Thiết lập thư mục views và view engine Pug
 app.set("views", path.join(__dirname, "views")); // Thư mục chứa file Pug
 app.set("view engine", "pug"); // Thiết lập Pug làm view engine
