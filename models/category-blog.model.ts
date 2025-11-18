@@ -11,7 +11,7 @@ const schema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
-    views: {
+    view: {
       type: Number,
       default: 0,
     },
