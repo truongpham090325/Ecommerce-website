@@ -195,24 +195,75 @@ if (listButtonApi.length > 0) {
     button.addEventListener("click", () => {
       const method = button.getAttribute("data-method");
       const api = button.getAttribute("data-api");
-      console.log(method);
-      console.log(api);
+      if (method == "DELETE") {
+        Swal.fire({
+          title: "Bạn có chắc muốn xóa không?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Đồng ý",
+          cancelButtonText: "Hủy bỏ",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(api, {
+              method: method || "GET",
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.code == "error") {
+                  notyf.error(data.message);
+                }
 
-      fetch(api, {
-        method: method || "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.code == "error") {
-            notyf.error(data.message);
-          }
-
-          if (data.code == "success") {
-            drawNotify(data.code, data.message);
-            location.reload();
+                if (data.code == "success") {
+                  drawNotify(data.code, data.message);
+                  location.reload();
+                }
+              });
           }
         });
+      } else {
+        fetch(api, {
+          method: method || "GET",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.code == "error") {
+              notyf.error(data.message);
+            }
+
+            if (data.code == "success") {
+              drawNotify(data.code, data.message);
+              location.reload();
+            }
+          });
+      }
     });
   });
 }
 // End button api
+
+// Form Search
+const formSearch = document.querySelector("[form-search]");
+if (formSearch) {
+  const url = new URL(window.location.href);
+
+  formSearch.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const value = event.target.keyword.value;
+    if (value) {
+      url.searchParams.set("keyword", value);
+    } else {
+      url.searchParams.delete("keyword");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị giá trị mặc định
+  const valueCurrent = url.searchParams.get("keyword");
+  if (valueCurrent) {
+    formSearch.keyword.value = valueCurrent;
+  }
+}
+
+// End Form Search
