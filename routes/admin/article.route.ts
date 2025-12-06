@@ -1,4 +1,3 @@
-import { createCategoryPost } from "./../../controllers/admin/article.controller";
 import { Router } from "express";
 import * as articleController from "../../controllers/admin/article.controller";
 import multer from "multer";
@@ -9,6 +8,8 @@ const router = Router();
 const upload = multer();
 
 router.get("/category", articleController.category);
+
+router.get("/category/trash", articleController.categoryTrash);
 
 router.get("/category/create", articleController.createCategory);
 
@@ -27,5 +28,11 @@ router.patch(
   articleValidate.createCategoryPost,
   articleController.editCategoryPatch
 );
+
+router.patch("/category/delete/:id", articleController.deleteCategoryPatch);
+
+router.patch("/category/undo/:id", articleController.undoCategoryPatch);
+
+router.delete("/category/destroy/:id", articleController.destroyCategoryDelete);
 
 export default router;

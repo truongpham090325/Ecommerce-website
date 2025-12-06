@@ -25,6 +25,27 @@ export const category = async (req: Request, res: Response) => {
   });
 };
 
+export const categoryTrash = async (req: Request, res: Response) => {
+  const recordList: any = await CategoryBlog.find({
+    deleted: true,
+  });
+
+  for (const item of recordList) {
+    if (item.parent) {
+      const parent = await CategoryBlog.findOne({
+        _id: item.parent,
+      });
+
+      item.parentName = parent?.name;
+    }
+  }
+
+  res.render("admin/pages/article-trash-category", {
+    pageTitle: "Thùng rác danh mục bài viết",
+    recordList: recordList,
+  });
+};
+
 export const createCategory = async (req: Request, res: Response) => {
   const categoryList = await CategoryBlog.find({});
   const categoryTree = buildCategoryTree(categoryList);
@@ -134,6 +155,77 @@ export const editCategoryPatch = async (req: Request, res: Response) => {
     res.json({
       code: "error",
       message: "Dữ liệu không hợp lệ!",
+    });
+  }
+};
+
+export const deleteCategoryPatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await CategoryBlog.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: true,
+        deletedAt: Date.now(),
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Xóa danh mục bài viết thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const undoCategoryPatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await CategoryBlog.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: false,
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Khôi phục mục bài viết thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const destroyCategoryDelete = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await CategoryBlog.deleteOne({
+      _id: id,
+    });
+
+    res.json({
+      code: "success",
+      message: "Xóa vĩnh viễn mục bài viết thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
     });
   }
 };
