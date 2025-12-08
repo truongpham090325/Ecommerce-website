@@ -289,3 +289,16 @@ if (pagination) {
   }
 }
 // End pagination
+
+// button-copy
+const listButtonCopy = document.querySelectorAll("[button-copy]");
+if (listButtonCopy.length > 0) {
+  listButtonCopy.forEach((button) => {
+    button.addEventListener("click", () => {
+      const dataContent = button.getAttribute("data-content");
+      window.navigator.clipboard.writeText(dataContent);
+      notyf.success("Đã copy!");
+    });
+  });
+}
+// End button-copy
