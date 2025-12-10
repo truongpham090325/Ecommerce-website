@@ -23,7 +23,12 @@ export const fileManager = async (req: Request, res: Response) => {
   };
   // Hết phân trang
 
-  const listFile: any = await Media.find({}).limit(limitItems).skip(skip);
+  const listFile: any = await Media.find({})
+    .sort({
+      createdAt: "desc",
+    })
+    .limit(limitItems)
+    .skip(skip);
   for (const item of listFile) {
     item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY");
     item.sizeFormat = formatFileSize(item.size);

@@ -302,3 +302,53 @@ if (listButtonCopy.length > 0) {
   });
 }
 // End button-copy
+
+// Modal Preview File
+const modalPreviewFile = document.querySelector("#modalPreviewFile");
+if (modalPreviewFile) {
+  const innerPreview = modalPreviewFile.querySelector(".inner-preview");
+
+  // Sự kiện click button
+  let buttonClicked = null;
+  const listButtonPreviewFile = document.querySelectorAll("[button-preview]");
+  listButtonPreviewFile.forEach((button) => {
+    button.addEventListener("click", () => {
+      buttonClicked = button;
+    });
+  });
+
+  // Sự kiện đóng modal
+  modalPreviewFile.addEventListener("hidden.bs.modal", () => {
+    buttonClicked = null;
+    innerPreview.innerHTML = "";
+  });
+
+  // Sự kiện mở modal
+  modalPreviewFile.addEventListener("shown.bs.modal", () => {
+    const file = buttonClicked.getAttribute("data-file");
+    const mimetype = buttonClicked.getAttribute("data-mimetype");
+
+    if (mimetype.includes("image")) {
+      innerPreview.innerHTML = `
+        <img src="${file}" width="100%" />
+      `;
+    } else if (mimetype.includes("audio")) {
+      innerPreview.innerHTML = `
+        <audio controls>
+          <source src="${file}"></source>
+        </audio>
+      `;
+    } else if (mimetype.includes("video")) {
+      innerPreview.innerHTML = `
+        <video controls width="100%">
+          <source src="${file}"></source>
+        </video>
+      `;
+    } else if (mimetype.includes("application/pdf")) {
+      innerPreview.innerHTML = `
+        <iframe src="${file}" width="100%" height="500px"></iframe>
+      `;
+    }
+  });
+}
+// End Model Preview File
