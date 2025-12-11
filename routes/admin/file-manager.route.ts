@@ -16,4 +16,6 @@ router.patch(
   fileManagerController.changeFileNamePatch
 );
 
+router.delete("/delete-file/:id", fileManagerController.deleteFileDel);
+
 export default router;

@@ -416,3 +416,42 @@ if (modalChangeFileName) {
   });
 }
 // End Modal Change File Name
+
+// Button Delete File
+const listButtonDeleteFile = document.querySelectorAll("[button-delete-file]");
+if (listButtonDeleteFile.length > 0) {
+  listButtonDeleteFile.forEach((button) => {
+    button.addEventListener("click", () => {
+      const fileId = button.getAttribute("data-file-id");
+      const fileName = button.getAttribute("data-file-name");
+
+      Swal.fire({
+        title: `Bạn có chắc muốn xóa file: ${fileName}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy bỏ",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/${pathAdmin}/file-manager/delete-file/${fileId}`, {
+            method: "DELETE",
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.code == "error") {
+                notyf.error(data.message);
+              }
+
+              if (data.code == "success") {
+                drawNotify(data.code, data.message);
+                location.reload();
+              }
+            });
+        }
+      });
+    });
+  });
+}
+// End button Delete File
