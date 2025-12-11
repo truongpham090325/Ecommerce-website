@@ -18,4 +18,10 @@ router.patch(
 
 router.delete("/delete-file/:id", fileManagerController.deleteFileDel);
 
+router.post(
+  "/folder/create",
+  upload.none(),
+  fileManagerController.createFolderPost
+);
+
 export default router;
