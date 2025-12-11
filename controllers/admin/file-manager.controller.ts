@@ -8,6 +8,15 @@ import { domainCDN } from "../../configs/variable.config";
 
 export const fileManager = async (req: Request, res: Response) => {
   // Danh sách file
+  const find: {
+    folder?: string;
+  } = {};
+
+  find.folder = "/media";
+  if (req.query.folderPath) {
+    find.folder = find.folder + `/${req.query.folderPath}`;
+  }
+
   // Phân trang
   const limitItems = 4;
   let page = 1;
@@ -24,7 +33,7 @@ export const fileManager = async (req: Request, res: Response) => {
   };
   // Hết phân trang
 
-  const listFile: any = await Media.find({})
+  const listFile: any = await Media.find(find)
     .sort({
       createdAt: "desc",
     })
