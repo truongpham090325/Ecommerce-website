@@ -472,6 +472,12 @@ if (formCreateFolder) {
     const formData = new FormData();
     formData.append("folderName", folderName);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const folderPath = urlParams.get("folderPath");
+    if (folderPath) {
+      formData.append("folderPath", folderPath);
+    }
+
     fetch(`/${pathAdmin}/file-manager/folder/create`, {
       method: "POST",
       body: formData,
@@ -498,8 +504,13 @@ if (listButtonToFolder.length > 0) {
 
   listButtonToFolder.forEach((button) => {
     button.addEventListener("click", () => {
-      const folderPath = button.getAttribute("data-folder-path");
+      let folderPath = button.getAttribute("data-folder-path");
       if (folderPath) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderPathCurrent = urlParams.get("folderPath");
+        if (folderPathCurrent) {
+          folderPath = `${folderPathCurrent}/${folderPath}`;
+        }
         url.searchParams.set("folderPath", folderPath);
       } else {
         url.searchParams.delete("folderPath");
@@ -509,3 +520,37 @@ if (listButtonToFolder.length > 0) {
   });
 }
 // End Button To Folder
+
+// Breadcrumb Folder
+const breadcumbFolder = document.querySelector("[breadcumb-folder]");
+if (breadcumbFolder) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const folderPath = urlParams.get("folderPath") || "";
+  const listFolder = folderPath.split("/") || [];
+
+  let htmls = `
+    <li class="list-group-item bg-white">
+      <a href="/${pathAdmin}/file-manager">
+        <i class="la la-angle-double-right text-info me-2"></i>
+        Media
+      </a>
+    </li>
+  `;
+
+  let path = "";
+  listFolder.forEach((item, index) => {
+    path += (index > 0 ? "/" : "") + listFolder[index];
+    console.log(path);
+
+    htmls += `
+      <li class="list-group-item bg-white">
+        <a href="/${pathAdmin}/file-manager?folderPath=${path}">
+          <i class="la la-angle-double-right text-info me-2"></i>
+          ${item}
+        </a>
+      </li>
+    `;
+  });
+  breadcumbFolder.innerHTML = htmls;
+}
+// End Breadcrumb Folder

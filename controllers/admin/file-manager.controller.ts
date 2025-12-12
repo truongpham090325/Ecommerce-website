@@ -47,7 +47,9 @@ export const fileManager = async (req: Request, res: Response) => {
 
   // Danh sách folder
   let folderList = [];
-  const response = await axios.get(`${domainCDN}/file-manager/folder/list`);
+  const response = await axios.get(
+    `${domainCDN}/file-manager/folder/list?folderPath=${req.query.folderPath}`
+  );
   if (response.data.code == "success") {
     folderList = response.data.folderList;
     for (const item of folderList) {
@@ -213,7 +215,7 @@ export const deleteFileDel = async (req: Request, res: Response) => {
 
 export const createFolderPost = async (req: Request, res: Response) => {
   try {
-    const { folderName } = req.body;
+    const { folderName, folderPath } = req.body;
     if (!folderName) {
       res.json({
         code: "error",
@@ -224,6 +226,9 @@ export const createFolderPost = async (req: Request, res: Response) => {
 
     const formData = new FormData();
     formData.append("folderName", folderName);
+    if (folderPath) {
+      formData.append("folderPath", folderPath);
+    }
 
     const response = await axios.post(
       `${domainCDN}/file-manager/folder/create`,
