@@ -540,7 +540,6 @@ if (breadcumbFolder) {
   let path = "";
   listFolder.forEach((item, index) => {
     path += (index > 0 ? "/" : "") + listFolder[index];
-    console.log(path);
 
     htmls += `
       <li class="list-group-item bg-white">
@@ -554,3 +553,55 @@ if (breadcumbFolder) {
   breadcumbFolder.innerHTML = htmls;
 }
 // End Breadcrumb Folder
+
+// Button Delete Folder
+const listButtonDeleteFolder = document.querySelectorAll(
+  "[button-delete-folder]"
+);
+if (listButtonDeleteFolder.length > 0) {
+  listButtonDeleteFolder.forEach((button) => {
+    button.addEventListener("click", () => {
+      const urlParam = new URLSearchParams(window.location.search);
+      const folderPath = urlParam.get("folderPath") || "";
+      const folderName = button.getAttribute("data-folder-name");
+      let folderFinal = "/media";
+      if (folderPath) {
+        folderFinal += `/${folderPath}`;
+      }
+      if (folderName) {
+        folderFinal += `/${folderName}`;
+      }
+
+      Swal.fire({
+        title: `Bạn có chắc muốn xóa folder: ${folderName}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy bỏ",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(
+            `/${pathAdmin}/file-manager/folder/delete?folderPath=${folderFinal}`,
+            {
+              method: "DELETE",
+            }
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.code == "error") {
+                notyf.error(data.message);
+              }
+
+              if (data.code == "success") {
+                drawNotify(data.code, data.message);
+                window.location.reload();
+              }
+            });
+        }
+      });
+    });
+  });
+}
+// End Button Delete Folder

@@ -24,4 +24,6 @@ router.post(
   fileManagerController.createFolderPost
 );
 
+router.delete("/folder/delete", fileManagerController.deleteFolderDel);
+
 export default router;
