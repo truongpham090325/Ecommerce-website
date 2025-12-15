@@ -14,8 +14,11 @@ if (uppyUpload) {
     width: "100%",
   });
 
+  const urlParam = new URLSearchParams(window.location.search);
+  const folderPath = urlParam.get("folderPath");
+
   uppy.use(XHRUpload, {
-    endpoint: `/${pathAdmin}/file-manager/upload`, // backend sẽ nhận được file tại link này
+    endpoint: `/${pathAdmin}/file-manager/upload?folderPath=${folderPath}`, // backend sẽ nhận được file tại link này
     fieldName: "files",
     bundle: true,
   });

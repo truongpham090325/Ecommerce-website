@@ -81,6 +81,11 @@ export const uploadPost = async (req: Request, res: Response) => {
       });
     });
 
+    const folderPath = req.query.folderPath;
+    if (folderPath) {
+      formData.append("folderPath", folderPath);
+    }
+
     const response = await axios.post(
       `${domainCDN}/file-manager/upload`,
       formData,
