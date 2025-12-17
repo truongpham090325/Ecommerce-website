@@ -308,3 +308,9 @@ export const deleteFolderDel = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const iframe = async (req: Request, res: Response) => {
+  res.render("admin/pages/file-manager-iframe", {
+    pageTitle: "Quản lý file",
+  });
+};
