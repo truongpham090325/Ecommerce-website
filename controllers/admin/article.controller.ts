@@ -3,6 +3,7 @@ import CategoryBlog from "../../models/category-blog.model";
 import { buildCategoryTree } from "../../helpers/category.helper";
 import slugify from "slugify";
 import { pathAdmin } from "../../configs/variable.config";
+import Blog from "../../models/blog.model";
 
 export const category = async (req: Request, res: Response) => {
   const find: {
@@ -262,6 +263,57 @@ export const destroyCategoryDelete = async (req: Request, res: Response) => {
     res.json({
       code: "error",
       message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const create = async (req: Request, res: Response) => {
+  const categoryList = await CategoryBlog.find({});
+
+  const categoryTree = buildCategoryTree(categoryList);
+
+  res.render("admin/pages/article-create", {
+    pageTitle: "Tạo bài viết",
+    categoryList: categoryTree,
+  });
+};
+
+export const createPost = async (req: Request, res: Response) => {
+  try {
+    const existSlug = await Blog.findOne({
+      slug: req.body.slug,
+    });
+
+    if (existSlug) {
+      res.json({
+        code: "error",
+        message: "Đường dẫn đã tồn tại!",
+      });
+      return;
+    }
+
+    req.body.category = JSON.parse(req.body.category);
+
+    req.body.search = slugify(`${req.body.name}`, {
+      replacement: " ",
+      lower: true,
+    });
+
+    if (req.body.status == "published") {
+      req.body.publishAt = new Date();
+    }
+
+    const newRecord = new Blog(req.body);
+    await newRecord.save();
+
+    res.json({
+      code: "success",
+      message: "Tạo bài viết thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Dữ liệu không hợp lệ!",
     });
   }
 };

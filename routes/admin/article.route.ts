@@ -35,4 +35,13 @@ router.patch("/category/undo/:id", articleController.undoCategoryPatch);
 
 router.delete("/category/destroy/:id", articleController.destroyCategoryDelete);
 
+router.get("/create", articleController.create);
+
+router.post(
+  "/create",
+  upload.none(),
+  articleValidate.createPost,
+  articleController.createPost
+);
+
 export default router;
