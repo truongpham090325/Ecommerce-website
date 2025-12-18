@@ -11,7 +11,7 @@ export const create = async (req: Request, res: Response) => {
   });
 
   res.render("admin/pages/account-admin-create", {
-    pageTitle: "Tổng quan",
+    pageTitle: "Tạo tài khoản quản trị",
     roleList: roleList,
   });
 };
@@ -53,4 +53,16 @@ export const createPost = async (req: Request, res: Response) => {
       message: "Dữ liệu không hợp lệ!",
     });
   }
+};
+
+export const list = async (req: Request, res: Response) => {
+  const roleList = await Role.find({
+    deleted: false,
+    status: "active",
+  });
+
+  res.render("admin/pages/account-admin-list", {
+    pageTitle: "Danh sách tài khoản quản trị",
+    roleList: roleList,
+  });
 };
