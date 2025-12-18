@@ -44,4 +44,6 @@ router.post(
   articleController.createPost
 );
 
+router.get("/list", articleController.list);
+
 export default router;
