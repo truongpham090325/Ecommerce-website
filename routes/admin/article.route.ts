@@ -55,4 +55,12 @@ router.patch(
   articleController.editPatch
 );
 
+router.patch("/delete/:id", articleController.deletePatch);
+
+router.get("/trash", articleController.trash);
+
+router.patch("/undo/:id", articleController.undoPatch);
+
+router.delete("/destroy/:id", articleController.destroyDelete);
+
 export default router;
