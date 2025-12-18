@@ -154,3 +154,85 @@ export const editPatch = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const deletePatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await Role.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: true,
+        deletedAt: Date.now(),
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Xóa nhóm quyền thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const trash = async (req: Request, res: Response) => {
+  const recordList: any = await Role.find({
+    deleted: true,
+  });
+
+  res.render("admin/pages/role-trash", {
+    pageTitle: "Thùng rác nhóm quyền",
+    recordList: recordList,
+  });
+};
+
+export const undoPatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await Role.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: false,
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Khôi phục nhóm quyền thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const destroyDelete = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await Role.deleteOne({
+      _id: id,
+    });
+
+    res.json({
+      code: "success",
+      message: "Xóa vĩnh viễn nhóm quyền thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};

@@ -1,6 +1,4 @@
 extends ../layouts/default.pug
-include ../mixins/pagination.pug
-include ../mixins/form-search.pug
 
 block main
   .row
@@ -12,24 +10,17 @@ block main
               h4.card-title #{pageTitle}
             // end col
             .col-auto
-              a.btn.btn-danger.me-1(
-                href=`/${pathAdmin}/role/trash`
+              a.btn.btn-secondary(
+                href=`/${pathAdmin}/role/list`
                 )
-                i.fa-solid.fa-trash.me-1
-                | Thùng rác
-              a.btn.btn-primary(
-                href=`/${pathAdmin}/role/create`
-                )
-                i.fa-solid.fa-plus.me-1
-                | Tạo nhóm quyền
+                <i class="fa-solid fa-arrow-left me-1"></i>
+                | Quay lại danh sách
                 // end col
             // end col
           // end row
         // end card-header
         .card-body.pt-0
-          .row
-            .col-lg-6
-              +form-search()
+          //- Table
           .table-responsive
             table.table.table-striped.mb-0
               thead.table-light
@@ -42,7 +33,7 @@ block main
               tbody
                 each item, index in recordList
                   tr
-                    td #{pagination.skip + index + 1}
+                    td #{index + 1}
                     td #{item.name}
                     td #{item.description}
                     td
@@ -51,14 +42,19 @@ block main
                       else if (item.status == "inactive")
                         span(class="badge bg-danger") Tạm dừng
                     td.text-end
-                      a(href=`/${pathAdmin}/role/edit/${item.id}`)
-                        i.las.la-pen.text-secondary.font-16
                       a(
                         href="javascript:;"
                         button-api
                         data-method="PATCH"
-                        data-api=`/${pathAdmin}/role/delete/${item.id}`
+                        data-api=`/${pathAdmin}/role/undo/${item.id}`
                       )
-                        i.las.la-trash-alt.text-secondary.font-16
-          +pagination()
+                        <i class="fa-solid fa-rotate-left text-primary"></i>
+                      a(
+                        href="javascript:;"
+                        button-api
+                        data-method="DELETE"
+                        data-api=`/${pathAdmin}/role/destroy/${item.id}`
+                      )
+                        i.las.la-trash-alt.text-danger.font-16
     // end col
+
