@@ -2,10 +2,42 @@
 const initialTinyMCE = () => {
   tinymce.init({
     selector: "[textarea-mce]",
-    plugins:
-      "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
+    plugins: [
+      "anchor",
+      "autolink",
+      "charmap",
+      "codesample",
+      "emoticons",
+      "link",
+      "lists",
+      "media",
+      "searchreplace",
+      "table",
+      "visualblocks",
+      "wordcount",
+      "image",
+    ],
     toolbar:
-      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
+      "undo redo | blocks fontfamily fontsize | " +
+      "bold italic underline strikethrough | " +
+      "link media table | " +
+      "align lineheight | " +
+      "numlist bullist indent outdent | " +
+      "emoticons charmap | " +
+      "removeformat | image",
+    init_instance_callback: (editor) => {
+      editor.on("OpenWindow", () => {
+        const title = document.querySelector(
+          ".tox .tox-dialog__title"
+        )?.innerHTML;
+        if (title == "Insert/Edit Media" || title == "Insert/Edit Image") {
+          const inputSource = document.querySelector(
+            `.tox input.tox-textfield[type="url"]`
+          );
+          inputSource.value = domainCDN;
+        }
+      });
+    },
   });
 };
 
