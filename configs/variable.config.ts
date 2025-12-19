@@ -68,6 +68,30 @@ export const permissionList = [
     name: "Thùng rác nhóm quyền",
   },
   {
+    id: "account-admin-list",
+    name: "Danh sách tài khoản quản trị",
+  },
+  {
+    id: "account-admin-create",
+    name: "Tạo tài khoản quản trị",
+  },
+  {
+    id: "account-admin-edit",
+    name: "Sửa tài khoản quản trị",
+  },
+  {
+    id: "account-admin-delete",
+    name: "Xóa tài khoản quản trị",
+  },
+  {
+    id: "account-admin-trash",
+    name: "Thùng rác tài khoản quản trị",
+  },
+  {
+    id: "account-admin-change-password",
+    name: "Đổi mật khẩu tài khoản quản trị",
+  },
+  {
     id: "file-manager",
     name: "Quản lý file",
   },
