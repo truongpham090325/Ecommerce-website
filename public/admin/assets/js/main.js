@@ -972,7 +972,7 @@ if (accountAdminCreateForm) {
 }
 // End Account Admin Create Form
 
-// Account Admin Create Form
+// Account Admin Edit Form
 const accountAdminEditForm = document.querySelector("#accountAdminEditForm");
 if (accountAdminEditForm) {
   const validation = new JustValidate("#accountAdminEditForm");

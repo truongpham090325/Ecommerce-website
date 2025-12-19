@@ -198,3 +198,92 @@ export const editPatch = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const deletePatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await AccountAdmin.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: true,
+        deletedAt: Date.now(),
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Xóa tài khoản thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const trash = async (req: Request, res: Response) => {
+  const recordList: any = await AccountAdmin.find({
+    deleted: true,
+  });
+
+  for (const item of recordList) {
+    const roleList = await Role.find({
+      _id: { $in: item.roles },
+    });
+    item.rolesName = roleList.map((item) => item.name);
+  }
+
+  res.render("admin/pages/account-admin-trash", {
+    pageTitle: "Thùng rác tài khoản",
+    recordList: recordList,
+  });
+};
+
+export const undoPatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await AccountAdmin.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: false,
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Khôi phục tài khoản thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const destroyDelete = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await AccountAdmin.deleteOne({
+      _id: id,
+    });
+
+    res.json({
+      code: "success",
+      message: "Xóa vĩnh viễn tài khoản thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
