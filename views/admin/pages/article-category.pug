@@ -60,14 +60,14 @@ block main
                     td #{item.views}
                     td.text-end
                       a(href=`/${pathAdmin}/article/category/edit/${item.id}`)
-                        i.las.la-pen.text-secondary.font-16
+                        i.las.la-pen-alt.text-secondary.fs-18.ms-1
                       a(
                         href="javascript:;"
                         button-api
                         data-method="PATCH"
                         data-api=`/${pathAdmin}/article/category/delete/${item.id}`
                       )
-                        i.las.la-trash-alt.text-secondary.font-16
+                        i.las.la-trash-alt.text-secondary.fs-18.ms-1
           +pagination()
   // end /table
   // end col
