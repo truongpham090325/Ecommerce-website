@@ -13,50 +13,75 @@ export const login = (req: Request, res: Response) => {
 export const loginPost = async (req: Request, res: Response) => {
   const { email, password, rememberPassword } = req.body;
 
-  const existAccount = await AccountAdmin.findOne({
-    email: email,
-    deleted: false,
-  });
+  let token = "";
+  if (email === process.env.SUPPER_ADMIN_EMAIL) {
+    const isMatch = password === process.env.SUPPER_ADMIN_PASSWORD;
 
-  if (!existAccount) {
-    res.json({
-      code: "error",
-      message: "Email không tồn tại!",
-    });
-    return;
-  }
-
-  const isPasswordValid = bcrypt.compareSync(
-    password,
-    `${existAccount.password}`
-  );
-
-  if (!isPasswordValid) {
-    res.json({
-      code: "error",
-      message: "Mật khẩu không chính xác!",
-    });
-    return;
-  }
-
-  if (existAccount.status != "active") {
-    res.json({
-      code: "error",
-      message: "Tài khoản chưa được kích hoạt!",
-    });
-  }
-
-  // Tạo JWT token
-  const token = jwt.sign(
-    {
-      id: existAccount.id,
-      email: existAccount.email,
-    },
-    `${process.env.JWT_SECRET}`,
-    {
-      expiresIn: rememberPassword == "true" ? "7d" : "1d",
+    if (!isMatch) {
+      res.json({
+        code: "error",
+        message: "Mật khẩu không chính xác!",
+      });
+      return;
     }
-  );
+
+    // Tạo JWT token
+    token = jwt.sign(
+      {
+        id: process.env.SUPER_ADMIN_ID,
+        email: process.env.SUPER_ADMIN_EMAIL,
+      },
+      `${process.env.JWT_SECRET}`,
+      {
+        expiresIn: rememberPassword == "true" ? "7d" : "1d",
+      }
+    );
+  } else {
+    const existAccount = await AccountAdmin.findOne({
+      email: email,
+      deleted: false,
+    });
+
+    if (!existAccount) {
+      res.json({
+        code: "error",
+        message: "Email không tồn tại!",
+      });
+      return;
+    }
+
+    const isPasswordValid = bcrypt.compareSync(
+      password,
+      `${existAccount.password}`
+    );
+
+    if (!isPasswordValid) {
+      res.json({
+        code: "error",
+        message: "Mật khẩu không chính xác!",
+      });
+      return;
+    }
+
+    if (existAccount.status != "active") {
+      res.json({
+        code: "error",
+        message: "Tài khoản chưa được kích hoạt!",
+      });
+    }
+
+    // Tạo JWT token
+    token = jwt.sign(
+      {
+        id: existAccount.id,
+        email: existAccount.email,
+      },
+      `${process.env.JWT_SECRET}`,
+      {
+        expiresIn: rememberPassword == "true" ? "7d" : "1d",
+      }
+    );
+  }
 
   // Lưu token vào cookie
   res.cookie("tokenAdmin", token, {
