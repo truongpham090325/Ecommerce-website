@@ -48,7 +48,12 @@ export const fileManager = async (req: Request, res: Response) => {
   // Danh sách folder
   let folderList = [];
   const response = await axios.get(
-    `${domainCDN}/file-manager/folder/list?folderPath=${req.query.folderPath}`
+    `${domainCDN}/file-manager/folder/list?folderPath=${req.query.folderPath}`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.FILE_MANAGER_SECRET}`,
+      },
+    }
   );
   if (response.data.code == "success") {
     folderList = response.data.folderList;
@@ -142,7 +147,12 @@ export const changeFileNamePatch = async (req: Request, res: Response) => {
     const response = await axios.patch(
       `${domainCDN}/file-manager/change-file-name`,
       formData,
-      formData.getHeaders()
+      {
+        headers: {
+          ...formData.getHeaders(),
+          Authorization: `Bearer ${process.env.FILE_MANAGER_SECRET}`,
+        },
+      }
     );
     if (response.data.code == "error") {
       res.json({
@@ -197,7 +207,12 @@ export const deleteFileDel = async (req: Request, res: Response) => {
     const response = await axios.patch(
       `${domainCDN}/file-manager/delete-file`,
       formData,
-      formData.getHeaders()
+      {
+        headers: {
+          ...formData.getHeaders(),
+          Authorization: `Bearer ${process.env.FILE_MANAGER_SECRET}`,
+        },
+      }
     );
     if (response.data.code == "error") {
       res.json({
@@ -244,7 +259,12 @@ export const createFolderPost = async (req: Request, res: Response) => {
     const response = await axios.post(
       `${domainCDN}/file-manager/folder/create`,
       formData,
-      formData.getHeaders()
+      {
+        headers: {
+          ...formData.getHeaders(),
+          Authorization: `Bearer ${process.env.FILE_MANAGER_SECRET}`,
+        },
+      }
     );
     if (response.data.code == "error") {
       res.json({
@@ -285,7 +305,10 @@ export const deleteFolderDel = async (req: Request, res: Response) => {
       `${domainCDN}/file-manager/folder/delete`,
       formData,
       {
-        headers: formData.getHeaders(),
+        headers: {
+          ...formData.getHeaders(),
+          Authorization: `Bearer ${process.env.FILE_MANAGER_SECRET}`,
+        },
       }
     );
 
