@@ -89,8 +89,14 @@ export const uploadPost = async (req: Request, res: Response) => {
     const response = await axios.post(
       `${domainCDN}/file-manager/upload`,
       formData,
-      formData.getHeaders()
+      {
+        headers: {
+          ...formData.getHeaders(),
+          Authorization: `Bearer ${process.env.FILE_MANAGER_SECRET}`,
+        },
+      }
     );
+
     if (response.data.code == "success") {
       await Media.insertMany(response.data.saveLinks);
       res.json({

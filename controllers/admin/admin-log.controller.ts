@@ -106,6 +106,31 @@ export const trash = async (req: Request, res: Response) => {
   });
 };
 
+export const undoPatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await AdminLog.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: false,
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Khôi phục lịch sử thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
 export const destroyDelete = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;

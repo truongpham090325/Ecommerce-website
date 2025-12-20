@@ -9,6 +9,8 @@ router.patch("/delete/:id", adminLogController.deletePatch);
 
 router.get("/trash", adminLogController.trash);
 
+router.patch("/undo/:id", adminLogController.undoPatch);
+
 router.delete("/destroy/:id", adminLogController.destroyDelete);
 
 export default router;
