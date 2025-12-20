@@ -59,7 +59,7 @@ block main
                         span.badge.bg-success Hoạt động
                       else if(item.status == "inactive")
                         span.badge.bg-danger Tạm dừng
-                    td #{item.views}
+                    td #{item.view}
                     td.text-end
                       if (permissions.includes("article-category-edit"))
                         a(href=`/${pathAdmin}/article/category/edit/${item.id}`)
