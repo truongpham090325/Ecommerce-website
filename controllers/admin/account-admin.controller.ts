@@ -4,6 +4,7 @@ import slugify from "slugify";
 import AccountAdmin from "../../models/account-admin.model";
 import bcrypt from "bcryptjs";
 import { pathAdmin } from "../../configs/variable.config";
+import { logAdminAction } from "../../helpers/log.heper";
 
 export const create = async (req: Request, res: Response) => {
   const roleList = await Role.find({
@@ -43,6 +44,11 @@ export const createPost = async (req: Request, res: Response) => {
 
     const newRecord = new AccountAdmin(req.body);
     await newRecord.save();
+
+    logAdminAction(
+      req,
+      `Đã tạo tài khoản: ${req.body.email} (Id: ${newRecord.id})`
+    );
 
     res.json({
       code: "success",
@@ -187,9 +193,11 @@ export const editPatch = async (req: Request, res: Response) => {
       req.body
     );
 
+    logAdminAction(req, `Đã cập nhập tài khoản: ${req.body.email} (Id: ${id})`);
+
     res.json({
       code: "success",
-      message: "Cập nhập thành công!",
+      message: "Cập nhập tài khoản thành công!",
     });
   } catch (error) {
     res.json({
@@ -212,6 +220,8 @@ export const deletePatch = async (req: Request, res: Response) => {
         deletedAt: Date.now(),
       }
     );
+
+    logAdminAction(req, `Đã xóa tài khoản: ${req.body.email} (Id: ${id})`);
 
     res.json({
       code: "success",
@@ -256,6 +266,11 @@ export const undoPatch = async (req: Request, res: Response) => {
       }
     );
 
+    logAdminAction(
+      req,
+      `Đã khôi phục tài khoản: ${req.body.email} (Id: ${id})`
+    );
+
     res.json({
       code: "success",
       message: "Khôi phục tài khoản thành công!",
@@ -275,6 +290,11 @@ export const destroyDelete = async (req: Request, res: Response) => {
     await AccountAdmin.deleteOne({
       _id: id,
     });
+
+    logAdminAction(
+      req,
+      `Đã xóa vĩnh viễn tài khoản: ${req.body.email} (Id: ${id})`
+    );
 
     res.json({
       code: "success",
@@ -337,6 +357,11 @@ export const changePasswordPatch = async (req: Request, res: Response) => {
         deleted: false,
       },
       req.body
+    );
+
+    logAdminAction(
+      req,
+      `Đã đổi mật khẩu tài khoản: ${req.body.email} (Id: ${id})`
     );
 
     res.json({

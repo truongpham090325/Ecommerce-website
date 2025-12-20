@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { pathAdmin, permissionList } from "../../configs/variable.config";
 import slugify from "slugify";
 import Role from "../../models/role.model";
+import { logAdminAction } from "../../helpers/log.heper";
 
 export const create = (req: Request, res: Response) => {
   res.render("admin/pages/role-create", {
@@ -21,6 +22,11 @@ export const createPost = async (req: Request, res: Response) => {
 
     const newRecord = new Role(req.body);
     await newRecord.save();
+
+    logAdminAction(
+      req,
+      `Đã tạo nhóm quyền: ${req.body.name} (Id: ${newRecord.id}})`
+    );
 
     res.json({
       code: "success",
@@ -142,6 +148,11 @@ export const editPatch = async (req: Request, res: Response) => {
       req.body
     );
 
+    logAdminAction(
+      req,
+      `Đã cập nhập nhóm quyền: ${req.body.name} (Id: ${id}})`
+    );
+
     res.json({
       code: "success",
       message: "Cập nhập nhóm quyền thành công!",
@@ -168,6 +179,8 @@ export const deletePatch = async (req: Request, res: Response) => {
         deletedAt: Date.now(),
       }
     );
+
+    logAdminAction(req, `Đã xóa nhóm quyền: ${req.body.name} (Id: ${id}})`);
 
     res.json({
       code: "success",
@@ -205,6 +218,11 @@ export const undoPatch = async (req: Request, res: Response) => {
       }
     );
 
+    logAdminAction(
+      req,
+      `Đã khôi phục nhóm quyền: ${req.body.name} (Id: ${id}})`
+    );
+
     res.json({
       code: "success",
       message: "Khôi phục nhóm quyền thành công!",
@@ -224,6 +242,11 @@ export const destroyDelete = async (req: Request, res: Response) => {
     await Role.deleteOne({
       _id: id,
     });
+
+    logAdminAction(
+      req,
+      `Đã xóa vĩnh viễn nhóm quyền: ${req.body.name} (Id: ${id}})`
+    );
 
     res.json({
       code: "success",

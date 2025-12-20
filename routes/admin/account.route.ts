@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as accountController from "../../controllers/admin/account.controller";
 import * as accountValidate from "../../validates/admin/account.validate";
+import * as accountMiddleware from "../../middlewares/admin/auth.middleware";
 import multer from "multer";
 
 const router = Router();
@@ -16,6 +17,6 @@ router.post(
   accountController.loginPost
 );
 
-router.get("/logout", accountController.logout);
+router.get("/logout", accountMiddleware.verifyToken, accountController.logout);
 
 export default router;

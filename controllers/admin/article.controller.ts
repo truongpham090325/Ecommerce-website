@@ -4,6 +4,7 @@ import { buildCategoryTree } from "../../helpers/category.helper";
 import slugify from "slugify";
 import { pathAdmin } from "../../configs/variable.config";
 import Blog from "../../models/blog.model";
+import { logAdminAction } from "../../helpers/log.heper";
 
 export const category = async (req: Request, res: Response) => {
   const find: {
@@ -115,6 +116,11 @@ export const createCategoryPost = async (req: Request, res: Response) => {
     const newRecord = new CategoryBlog(req.body);
     await newRecord.save();
 
+    logAdminAction(
+      req,
+      `Đã tạo danh mục bài viết: ${req.body.name} (Id: ${newRecord.id})`
+    );
+
     res.json({
       code: "success",
       message: "Tạo danh mục bài viết thành công!",
@@ -184,6 +190,11 @@ export const editCategoryPatch = async (req: Request, res: Response) => {
       req.body
     );
 
+    logAdminAction(
+      req,
+      `Đã cập nhập danh mục bài viết: ${req.body.name} (Id: ${id})`
+    );
+
     res.json({
       code: "success",
       message: "Cập nhập danh mục bài viết thành công!",
@@ -208,6 +219,11 @@ export const deleteCategoryPatch = async (req: Request, res: Response) => {
         deleted: true,
         deletedAt: Date.now(),
       }
+    );
+
+    logAdminAction(
+      req,
+      `Đã xóa danh mục bài viết: ${req.body.name} (Id: ${id})`
     );
 
     res.json({
@@ -235,6 +251,11 @@ export const undoCategoryPatch = async (req: Request, res: Response) => {
       }
     );
 
+    logAdminAction(
+      req,
+      `Đã khôi phục danh mục bài viết: ${req.body.name} (Id: ${id})`
+    );
+
     res.json({
       code: "success",
       message: "Khôi phục mục bài viết thành công!",
@@ -254,6 +275,11 @@ export const destroyCategoryDelete = async (req: Request, res: Response) => {
     await CategoryBlog.deleteOne({
       _id: id,
     });
+
+    logAdminAction(
+      req,
+      `Đã xóa vĩnh viễn danh mục bài viết: ${req.body.name} (Id: ${id})`
+    );
 
     res.json({
       code: "success",
@@ -305,6 +331,11 @@ export const createPost = async (req: Request, res: Response) => {
 
     const newRecord = new Blog(req.body);
     await newRecord.save();
+
+    logAdminAction(
+      req,
+      `Đã tạo bài viết: ${req.body.name} (Id: ${newRecord.id})`
+    );
 
     res.json({
       code: "success",
@@ -443,6 +474,8 @@ export const editPatch = async (req: Request, res: Response) => {
       req.body
     );
 
+    logAdminAction(req, `Đã cập nhập bài viết: ${req.body.name} (Id: ${id})`);
+
     res.json({
       code: "success",
       message: "Cập nhập bài viết thành công!",
@@ -468,6 +501,8 @@ export const deletePatch = async (req: Request, res: Response) => {
         deletedAt: Date.now(),
       }
     );
+
+    logAdminAction(req, `Đã xóa bài viết: ${req.body.name} (Id: ${id})`);
 
     res.json({
       code: "success",
@@ -505,6 +540,8 @@ export const undoPatch = async (req: Request, res: Response) => {
       }
     );
 
+    logAdminAction(req, `Đã khôi phục bài viết: ${req.body.name} (Id: ${id})`);
+
     res.json({
       code: "success",
       message: "Khôi phục bài viết thành công!",
@@ -524,6 +561,11 @@ export const destroyDelete = async (req: Request, res: Response) => {
     await Blog.deleteOne({
       _id: id,
     });
+
+    logAdminAction(
+      req,
+      `Đã xóa vĩnh viễn bài viết: ${req.body.name} (Id: ${id})`
+    );
 
     res.json({
       code: "success",

@@ -3,9 +3,10 @@ import { pathAdmin, permissionList } from "../../configs/variable.config";
 import jwt from "jsonwebtoken";
 import AccountAdmin from "../../models/account-admin.model";
 import Role from "../../models/role.model";
+import { RequestAccount } from "../../interfaces/request.interface";
 
 export const verifyToken = async (
-  req: Request,
+  req: RequestAccount,
   res: Response,
   next: NextFunction
 ) => {
@@ -69,6 +70,7 @@ export const verifyToken = async (
       }
 
       res.locals.permissions = permissions;
+      req.adminId = existAccount.id;
     }
 
     next();
