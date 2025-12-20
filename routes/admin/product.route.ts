@@ -28,4 +28,12 @@ router.patch(
   productController.editCategoryPatch
 );
 
+router.patch("/category/delete/:id", productController.deleteCategoryPatch);
+
+router.get("/category/trash", productController.categoryTrash);
+
+router.patch("/category/undo/:id", productController.undoCategoryPatch);
+
+router.delete("/category/destroy/:id", productController.destroyCategoryDelete);
+
 export default router;
