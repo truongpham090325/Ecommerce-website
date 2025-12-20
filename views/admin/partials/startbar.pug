@@ -98,6 +98,12 @@
                   li.nav-item
                     a.nav-link(href=`/${pathAdmin}/account-admin/list`) Danh sách tài khoản
                 // end nav-item
+          li.nav-item
+            a.nav-link(
+              href=`/${pathAdmin}/admin-log/list`
+              )
+              i.iconoir-clock.menu-icon
+              span Lịch sử hoạt động
           if (permissions.includes("file-manager"))
             li.nav-item
               a.nav-link(
