@@ -221,7 +221,7 @@ export const deletePatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(req, `Đã xóa tài khoản: ${req.body.email} (Id: ${id})`);
+    logAdminAction(req, `Đã xóa tài khoản: ${id}`);
 
     res.json({
       code: "success",
@@ -266,10 +266,7 @@ export const undoPatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(
-      req,
-      `Đã khôi phục tài khoản: ${req.body.email} (Id: ${id})`
-    );
+    logAdminAction(req, `Đã khôi phục tài khoản: ${id}`);
 
     res.json({
       code: "success",
@@ -291,10 +288,7 @@ export const destroyDelete = async (req: Request, res: Response) => {
       _id: id,
     });
 
-    logAdminAction(
-      req,
-      `Đã xóa vĩnh viễn tài khoản: ${req.body.email} (Id: ${id})`
-    );
+    logAdminAction(req, `Đã xóa vĩnh viễn tài khoản: ${id}`);
 
     res.json({
       code: "success",
@@ -359,10 +353,7 @@ export const changePasswordPatch = async (req: Request, res: Response) => {
       req.body
     );
 
-    logAdminAction(
-      req,
-      `Đã đổi mật khẩu tài khoản: ${req.body.email} (Id: ${id})`
-    );
+    logAdminAction(req, `Đã đổi mật khẩu tài khoản: ${id}`);
 
     res.json({
       code: "success",

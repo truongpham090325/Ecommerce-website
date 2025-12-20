@@ -35,6 +35,7 @@ export const verifyToken = async (
       };
 
       res.locals.permissions = permissionList.map((item) => item.id);
+      req.adminId = process.env.SUPER_ADMIN_ID;
     } else {
       const existAccount = await AccountAdmin.findOne({
         _id: decoded.id,

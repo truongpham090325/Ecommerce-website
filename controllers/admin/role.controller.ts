@@ -180,7 +180,7 @@ export const deletePatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(req, `Đã xóa nhóm quyền: ${req.body.name} (Id: ${id}})`);
+    logAdminAction(req, `Đã xóa nhóm quyền: ${id}`);
 
     res.json({
       code: "success",
@@ -218,10 +218,7 @@ export const undoPatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(
-      req,
-      `Đã khôi phục nhóm quyền: ${req.body.name} (Id: ${id}})`
-    );
+    logAdminAction(req, `Đã khôi phục nhóm quyền: ${id}`);
 
     res.json({
       code: "success",
@@ -243,10 +240,7 @@ export const destroyDelete = async (req: Request, res: Response) => {
       _id: id,
     });
 
-    logAdminAction(
-      req,
-      `Đã xóa vĩnh viễn nhóm quyền: ${req.body.name} (Id: ${id}})`
-    );
+    logAdminAction(req, `Đã xóa vĩnh viễn nhóm quyền: ${id}`);
 
     res.json({
       code: "success",

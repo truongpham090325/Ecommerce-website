@@ -221,16 +221,14 @@ export const deleteCategoryPatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(
-      req,
-      `Đã xóa danh mục bài viết: ${req.body.name} (Id: ${id})`
-    );
+    logAdminAction(req, `Đã xóa danh mục bài viết: ${id}`);
 
     res.json({
       code: "success",
       message: "Xóa danh mục bài viết thành công!",
     });
   } catch (error) {
+    console.log(error);
     res.json({
       code: "error",
       message: "Id không hợp lệ!",
@@ -251,10 +249,7 @@ export const undoCategoryPatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(
-      req,
-      `Đã khôi phục danh mục bài viết: ${req.body.name} (Id: ${id})`
-    );
+    logAdminAction(req, `Đã khôi phục danh mục bài viết: ${id}`);
 
     res.json({
       code: "success",
@@ -276,10 +271,7 @@ export const destroyCategoryDelete = async (req: Request, res: Response) => {
       _id: id,
     });
 
-    logAdminAction(
-      req,
-      `Đã xóa vĩnh viễn danh mục bài viết: ${req.body.name} (Id: ${id})`
-    );
+    logAdminAction(req, `Đã xóa vĩnh viễn danh mục bài viết: ${id}`);
 
     res.json({
       code: "success",
@@ -502,7 +494,7 @@ export const deletePatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(req, `Đã xóa bài viết: ${req.body.name} (Id: ${id})`);
+    logAdminAction(req, `Đã xóa bài viết: ${id}`);
 
     res.json({
       code: "success",
@@ -540,7 +532,7 @@ export const undoPatch = async (req: Request, res: Response) => {
       }
     );
 
-    logAdminAction(req, `Đã khôi phục bài viết: ${req.body.name} (Id: ${id})`);
+    logAdminAction(req, `Đã khôi phục bài viết: ${id}`);
 
     res.json({
       code: "success",
@@ -562,10 +554,7 @@ export const destroyDelete = async (req: Request, res: Response) => {
       _id: id,
     });
 
-    logAdminAction(
-      req,
-      `Đã xóa vĩnh viễn bài viết: ${req.body.name} (Id: ${id})`
-    );
+    logAdminAction(req, `Đã xóa vĩnh viên bài viết: ${id}`);
 
     res.json({
       code: "success",
