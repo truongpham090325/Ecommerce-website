@@ -331,3 +331,15 @@ export const createPost = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const attribute = async (req: Request, res: Response) => {
+  res.render("admin/pages/product-attribute", {
+    pageTitle: "Quản lý thuộc tính sản phẩm",
+  });
+};
+
+export const createAttribute = async (req: Request, res: Response) => {
+  res.render("admin/pages/product-create-attribute", {
+    pageTitle: "Tạo thuộc tính sản phẩm",
+  });
+};

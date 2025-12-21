@@ -1429,3 +1429,42 @@ if (listElementListImage.length > 0) {
   });
 }
 // End Button Remove Image
+
+// box-option
+const boxOption = document.querySelector("[box-option]");
+if (boxOption) {
+  const optionList = boxOption.querySelector(".option-list");
+  const optionCreate = boxOption.querySelector(".option-create");
+
+  // Tạo option
+  optionCreate.addEventListener("click", () => {
+    const newItem = `
+      <div class="option-item">
+        <span class="btn btn-secondary option-move">
+          <i class="fa-solid fa-up-down-left-right"></i>
+        </span>
+        <input class="form-control option-label" type="text" placeholder="Nhãn">
+        <input class="form-control option-value" type="text" placeholder="Giá trị">
+        <span class="btn btn-danger option-remove">Xóa</span>
+      </div>
+    `;
+    optionList.insertAdjacentHTML("beforeend", newItem);
+  });
+
+  // Xóa option
+  optionList.addEventListener("click", (event) => {
+    if (event.target.closest(".option-remove")) {
+      const parentItem = event.target.closest(".option-item");
+      if (parentItem) {
+        parentItem.remove();
+      }
+    }
+  });
+
+  // Sắp xếp
+  new Sortable(optionList, {
+    animation: 150,
+    handle: ".option-move",
+  });
+}
+// End box-option
