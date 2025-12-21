@@ -468,3 +468,85 @@ export const editAttributePatch = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const deleteAttributePatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await AttributeProduct.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: true,
+        deletedAt: Date.now(),
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Xóa thuộc tính thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const trashAttribute = async (req: Request, res: Response) => {
+  const recordList: any = await AttributeProduct.find({
+    deleted: true,
+  });
+
+  res.render("admin/pages/product-attribute-trash", {
+    pageTitle: "Thùng rác thuộc tính",
+    recordList: recordList,
+  });
+};
+
+export const undoAttributePatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await AttributeProduct.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: false,
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Khôi phục thuộc tính thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const destroyAttributeDelete = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await AttributeProduct.deleteOne({
+      _id: id,
+    });
+
+    res.json({
+      code: "success",
+      message: "Xóa vĩnh viễn mục thuộc tính thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
