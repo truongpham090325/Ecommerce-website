@@ -691,6 +691,28 @@ const getMultiFile = (name) => {
 };
 // End Get Multi File
 
+// Option List
+const getOptionList = (name) => {
+  const optionList = document.querySelectorAll(
+    `[box-option="${name}"] .option-list .option-item`
+  );
+  const dataFinal = [];
+
+  optionList.forEach((item) => {
+    const label = item.querySelector(".option-label").value;
+    const value = item.querySelector(".option-value").value;
+    if (label && value) {
+      dataFinal.push({
+        label: label,
+        value: value,
+      });
+    }
+  });
+
+  return dataFinal;
+};
+// End Option List
+
 // Article Create Form
 const articleCreateForm = document.querySelector("#articleCreateForm");
 if (articleCreateForm) {
@@ -1468,3 +1490,47 @@ if (boxOption) {
   });
 }
 // End box-option
+
+// Product Create Attribute Form
+const productCreateAttributeForm = document.querySelector(
+  "#productCreateAttributeForm"
+);
+if (productCreateAttributeForm) {
+  const validation = new JustValidate("#productCreateAttributeForm");
+
+  validation
+    .addField("#name", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập tên thuộc tính!",
+      },
+    ])
+    .onSuccess((event) => {
+      const name = event.target.name.value;
+      const type = event.target.type.value;
+      const options = getOptionList("options");
+
+      // Tạo FormData
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("type", type);
+      formData.append("options", JSON.stringify(options));
+
+      fetch(`/${pathAdmin}/product/attribute/create`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            notyf.error(data.message);
+          }
+
+          if (data.code == "success") {
+            drawNotify("success", data.message);
+            location.reload();
+          }
+        });
+    });
+}
+// End Product Create Attribute Form
