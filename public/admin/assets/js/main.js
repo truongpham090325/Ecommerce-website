@@ -676,6 +676,21 @@ const getCheckboxList = (name) => {
 };
 // End Checkbox List
 
+// Get Multi File
+const getMultiFile = (name) => {
+  const boxMultiFile = document.querySelector(`[multi-file="${name}"]`);
+  const listImage = boxMultiFile.querySelectorAll("img[src-relative]");
+  const listLink = [];
+  listImage.forEach((image) => {
+    const link = image.getAttribute("src-relative");
+    if (link) {
+      listLink.push(link);
+    }
+  });
+  return listLink;
+};
+// End Get Multi File
+
 // Article Create Form
 const articleCreateForm = document.querySelector("#articleCreateForm");
 if (articleCreateForm) {
@@ -1288,6 +1303,7 @@ if (productCreateForm) {
       const category = getCheckboxList("category");
       const description = tinymce.get("description").getContent();
       const content = tinymce.get("content").getContent();
+      const images = getMultiFile("images");
 
       // Tạo FormData
       const formData = new FormData();
@@ -1298,6 +1314,7 @@ if (productCreateForm) {
       formData.append("category", JSON.stringify(category));
       formData.append("description", description);
       formData.append("content", content);
+      formData.append("images", JSON.stringify(images));
 
       fetch(`/${pathAdmin}/product/create`, {
         method: "POST",
@@ -1317,3 +1334,98 @@ if (productCreateForm) {
     });
 }
 // End Product Create Form
+
+// Checkbox Multi
+const listCheckBoxInput = document.querySelectorAll(".checkbox-input");
+if (listCheckBoxInput.length > 0) {
+  const inputCheckBoxAll = document.querySelector(".checkbox-all");
+
+  inputCheckBoxAll.addEventListener("change", () => {
+    listCheckBoxInput.forEach((input) => {
+      input.checked = inputCheckBoxAll.checked;
+    });
+  });
+
+  listCheckBoxInput.forEach((input) => {
+    input.addEventListener("change", () => {
+      const listCheckBoxChecked = document.querySelectorAll(
+        ".checkbox-input:checked"
+      );
+      if (listCheckBoxChecked.length == listCheckBoxInput.length) {
+        inputCheckBoxAll.checked = true;
+      } else {
+        inputCheckBoxAll.checked = false;
+      }
+    });
+  });
+}
+// End Checkbox Multi
+
+// Button Copy Multi
+const buttonCopyMulti = document.querySelector("[button-copy-multi]");
+if (buttonCopyMulti) {
+  buttonCopyMulti.addEventListener("click", () => {
+    const listCheckboxInputChecked = document.querySelectorAll(
+      ".checkbox-input:checked"
+    );
+
+    const listLink = [];
+    listCheckboxInputChecked.forEach((input) => {
+      listLink.push(input.value);
+    });
+
+    navigator.clipboard.writeText(JSON.stringify(listLink));
+    notyf.success("Đã copy!");
+  });
+}
+// End Button Copy Multi
+
+// Button Paste
+const listButtonPaste = document.querySelectorAll("[button-paste]");
+if (listButtonPaste.length > 0) {
+  listButtonPaste.forEach((buttonPaste) => {
+    const elementListImage = buttonPaste
+      .closest(".form-multi-file")
+      .querySelector(".inner-list-image");
+
+    buttonPaste.addEventListener("click", async () => {
+      const listLinkJson = await navigator.clipboard.readText();
+      const listLink = JSON.parse(listLinkJson);
+
+      for (const link of listLink) {
+        elementListImage.insertAdjacentHTML(
+          "beforeend",
+          `
+          <div class="inner-image" bis_skin_checked="1">
+            <img src="${domainCDN}${link}" alt="" src-relative=${link}>
+            <span class="inner-remove">x</span>
+          </div>
+        `
+        );
+      }
+    });
+
+    new Sortable(elementListImage, {
+      animation: 150,
+    });
+  });
+}
+// End Button Paste
+
+// Button Remove Image
+const listElementListImage = document.querySelectorAll(
+  ".form-multi-file .inner-list-image"
+);
+if (listElementListImage.length > 0) {
+  listElementListImage.forEach((elementListImage) => {
+    elementListImage.addEventListener("click", (event) => {
+      if (event.target.closest(".inner-remove")) {
+        const parentItem = event.target.closest(".inner-image");
+        if (parentItem) {
+          parentItem.remove();
+        }
+      }
+    });
+  });
+}
+// End Button Remove Image
