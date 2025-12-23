@@ -1326,6 +1326,8 @@ if (productCreateForm) {
       const description = tinymce.get("description").getContent();
       const content = tinymce.get("content").getContent();
       const images = getMultiFile("images");
+      const priceOld = event.target.priceOld.value;
+      const priceNew = event.target.priceNew.value;
 
       // Tạo FormData
       const formData = new FormData();
@@ -1337,6 +1339,8 @@ if (productCreateForm) {
       formData.append("description", description);
       formData.append("content", content);
       formData.append("images", JSON.stringify(images));
+      formData.append("priceOld", priceOld);
+      formData.append("priceNew", priceNew);
 
       fetch(`/${pathAdmin}/product/create`, {
         method: "POST",
