@@ -1582,3 +1582,37 @@ if (productEditAttributeForm) {
     });
 }
 // End Product Edit Attribute Form
+
+// button-render-variant
+const generateVariants = (attributes) => {
+  // Bước 1: Lấy ra danh sách các lựa chọn (options) cho từng thuộc tính
+  const optionList = attributes.map((attribute) =>
+    attribute.options.map((option) => ({
+      attrId: attribute._id,
+      attrType: attribute.type,
+      label: option.label,
+      value: option.value,
+    }))
+  );
+
+  // Bước 2: Tạo ra tổ hợp các biến thể
+  const variantList = optionList.reduce(
+    (a, b) => a.flatMap((x) => b.map((y) => [...x, y])),
+    [[]]
+  );
+  return variantList;
+};
+
+const buttonRenderVariant = document.querySelector("[button-render-variant]");
+if (buttonRenderVariant) {
+  buttonRenderVariant.addEventListener("click", () => {
+    const attr = buttonRenderVariant.getAttribute("button-render-variant");
+    const listId = getCheckboxList(attr);
+    const attributeListChecked = attributeList.filter((item) =>
+      listId.includes(item._id)
+    );
+    const variantList = generateVariants(attributeListChecked);
+    console.log(variantList);
+  });
+}
+// End button-render-variant
