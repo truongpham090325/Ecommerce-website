@@ -1613,6 +1613,57 @@ if (buttonRenderVariant) {
     );
     const variantList = generateVariants(attributeListChecked);
     console.log(variantList);
+    console.log(attributeListChecked);
+
+    const variantTable = document.querySelector("[variant-table]");
+    // Hiển thị tiêu đề cột
+    const variantTableHead = variantTable.querySelector("thead tr");
+
+    let variantHeadHTML = "";
+    variantHeadHTML += `
+      <th scope="col">Trạng thái</th>
+    `;
+    attributeListChecked.forEach((item) => {
+      variantHeadHTML += `<th scope="col">${item.name}</th>`;
+    });
+    variantHeadHTML += `
+      <th scope="col">Giá cũ</th>
+      <th scope="col">Giá mới</th>
+    `;
+    variantTableHead.innerHTML = variantHeadHTML;
+
+    // Hiển thị các hàng
+    const variantBody = variantTable.querySelector("tbody");
+    const priceOld = document.querySelector('[name="priceOld"]').value;
+    const priceNew = document.querySelector('[name="priceNew"]').value;
+    let variantBodyHTML = "";
+    variantList.forEach((variant) => {
+      let tr = "<tr>";
+      tr += `
+        <td>
+          <div class="form-check form-switch form-switch-success">
+            <input class="form-check-input" type="checkbox" checked="">
+          </div>
+          <input class="d-none" attribute-value />
+        </td>
+      `;
+      variant.forEach((item) => {
+        tr += `
+          <td>${item.label}</td>
+        `;
+      });
+      tr += `
+        <td>
+          <input class="form-control" type="number" price-old value=${priceOld}>
+        </td>
+        <td>
+          <input class="form-control" type="number" price-new value=${priceNew}>
+        </td>
+      `;
+      tr += "</tr>";
+      variantBodyHTML += tr;
+    });
+    variantBody.innerHTML = variantBodyHTML;
   });
 }
 // End button-render-variant
