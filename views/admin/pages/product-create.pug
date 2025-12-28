@@ -50,6 +50,10 @@ block main
             .mb-3
               label.form-label(for="priceNew") Giá mới
               input.form-control(id="priceNew" type="number" name="priceNew")
+          .col-md-6.col-lg-6
+            .mb-3
+              label.form-label(for="stock") Còn lại
+              input.form-control(id="stock" type="number" name="stock")
           .col-md-12.col-lg-12
             .mb-3
               label.form-label Danh sách thuộc tính
@@ -72,6 +76,7 @@ block main
                       //- th(scope="col") Màu sắc
                       //- th(scope="col") Giá cũ
                       //- th(scope="col") Giá mới
+                      //- th(scope="col") Còn lại
                   tbody
                     //- tr
                     //-   td
@@ -79,6 +84,8 @@ block main
                     //-       input.form-check-input(type="checkbox" checked)
                     //-   td Size S
                     //-   td Đỏ
+                    //-   td
+                    //-     input.form-control(type="number")
                     //-   td
                     //-     input.form-control(type="number")
                     //-   td
