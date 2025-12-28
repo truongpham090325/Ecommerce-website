@@ -1328,6 +1328,34 @@ if (productCreateForm) {
       const images = getMultiFile("images");
       const priceOld = event.target.priceOld.value;
       const priceNew = event.target.priceNew.value;
+      const attributes = getCheckboxList("attributes");
+
+      // variants
+      const variants = [];
+      const listTr = document.querySelectorAll("[variant-table] tbody tr");
+      listTr.forEach((tr) => {
+        const status = tr.querySelector("input.form-check-input").checked;
+        const attributeValue = JSON.parse(
+          tr.querySelector("[attribute-value]").value
+        );
+        let priceOld = tr.querySelector("[price-old]").value;
+        if (priceOld) {
+          priceOld = parseInt(priceOld);
+        }
+        let priceNew = tr.querySelector("[price-new]").value;
+        if (priceNew) {
+          priceNew = parseInt(priceNew);
+        } else {
+          priceNew = priceOld;
+        }
+        variants.push({
+          status: status,
+          attributeValue: attributeValue,
+          priceOld: priceOld,
+          priceNew: priceNew,
+        });
+      });
+      // End variants
 
       // Tạo FormData
       const formData = new FormData();
@@ -1341,6 +1369,8 @@ if (productCreateForm) {
       formData.append("images", JSON.stringify(images));
       formData.append("priceOld", priceOld);
       formData.append("priceNew", priceNew);
+      formData.append("attributes", JSON.stringify(attributes));
+      formData.append("variants", JSON.stringify(variants));
 
       fetch(`/${pathAdmin}/product/create`, {
         method: "POST",
@@ -1612,39 +1642,41 @@ if (buttonRenderVariant) {
       listId.includes(item._id)
     );
     const variantList = generateVariants(attributeListChecked);
-    console.log(variantList);
-    console.log(attributeListChecked);
 
+    // Lấy ra bảng
     const variantTable = document.querySelector("[variant-table]");
-    // Hiển thị tiêu đề cột
-    const variantTableHead = variantTable.querySelector("thead tr");
 
+    // Hiển thị tiêu đề cột
+    const variantHead = variantTable.querySelector("thead tr");
     let variantHeadHTML = "";
     variantHeadHTML += `
       <th scope="col">Trạng thái</th>
     `;
     attributeListChecked.forEach((item) => {
-      variantHeadHTML += `<th scope="col">${item.name}</th>`;
+      variantHeadHTML += `
+        <th scope="col">${item.name}</th>
+      `;
     });
     variantHeadHTML += `
       <th scope="col">Giá cũ</th>
       <th scope="col">Giá mới</th>
     `;
-    variantTableHead.innerHTML = variantHeadHTML;
+    variantHead.innerHTML = variantHeadHTML;
 
     // Hiển thị các hàng
     const variantBody = variantTable.querySelector("tbody");
-    const priceOld = document.querySelector('[name="priceOld"]').value;
-    const priceNew = document.querySelector('[name="priceNew"]').value;
+    const priceOld = document.querySelector(`[name="priceOld"]`).value;
+    const priceNew = document.querySelector(`[name="priceNew"]`).value;
     let variantBodyHTML = "";
     variantList.forEach((variant) => {
+      const variantJSON = JSON.stringify(variant).replaceAll(`"`, `&quot;`);
       let tr = "<tr>";
       tr += `
         <td>
           <div class="form-check form-switch form-switch-success">
             <input class="form-check-input" type="checkbox" checked="">
           </div>
-          <input class="d-none" attribute-value />
+          <input class="d-none" attribute-value value="${variantJSON}" />
         </td>
       `;
       variant.forEach((item) => {
@@ -1654,10 +1686,10 @@ if (buttonRenderVariant) {
       });
       tr += `
         <td>
-          <input class="form-control" type="number" price-old value=${priceOld}>
+          <input class="form-control" type="number" value="${priceOld}" price-old>
         </td>
         <td>
-          <input class="form-control" type="number" price-new value=${priceNew}>
+          <input class="form-control" type="number" value="${priceNew}" price-new>
         </td>
       `;
       tr += "</tr>";
