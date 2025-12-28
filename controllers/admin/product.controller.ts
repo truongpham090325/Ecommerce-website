@@ -358,6 +358,56 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
+export const list = async (req: Request, res: Response) => {
+  const find: {
+    deleted: Boolean;
+    search?: RegExp;
+  } = {
+    deleted: false,
+  };
+
+  if (req.query.keyword) {
+    const keyword = slugify(`${req.query.keyword}`, {
+      replacement: " ",
+      lower: true,
+    });
+    const keywordRegex = new RegExp(keyword, "i");
+    find.search = keywordRegex;
+  }
+
+  // Phân trang
+  const limitItems = 5;
+  let page = 1;
+  if (req.query.page && parseInt(`${req.query.page}`) > 0) {
+    page = parseInt(`${req.query.page}`);
+  }
+  const totalRecord = await Product.countDocuments(find);
+  const totalPage = Math.ceil(totalRecord / limitItems);
+  const skip = (page - 1) * limitItems;
+  const pagination = {
+    totalRecord: totalRecord,
+    totalPage: totalPage,
+    skip: skip,
+  };
+  // Hết phân trang
+
+  const recordList: any = await Product.find(find)
+    .sort({
+      createdAt: "desc",
+    })
+    .limit(limitItems)
+    .skip(skip)
+    .sort({
+      position: "desc",
+    });
+
+  res.render("admin/pages/product-list", {
+    pageTitle: "Quản lý sản phẩm",
+    recordList: recordList,
+    pagination: pagination,
+  });
+};
+
 export const attribute = async (req: Request, res: Response) => {
   const find: {
     deleted: boolean;
