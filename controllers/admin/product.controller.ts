@@ -548,6 +548,88 @@ export const editPatch = async (req: Request, res: Response) => {
   }
 };
 
+export const deletePatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await Product.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: true,
+        deletedAt: Date.now(),
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Xóa sản phẩm thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const trash = async (req: Request, res: Response) => {
+  const recordList: any = await Product.find({
+    deleted: true,
+  });
+
+  res.render("admin/pages/product-trash", {
+    pageTitle: "Thùng rác sản phẩm",
+    recordList: recordList,
+  });
+};
+
+export const undoPatch = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await Product.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: false,
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Khôi phục sản phẩm thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
+export const destroyDelete = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    await Product.deleteOne({
+      _id: id,
+    });
+
+    res.json({
+      code: "success",
+      message: "Xóa vĩnh viễn sản phẩm thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ!",
+    });
+  }
+};
+
 export const attribute = async (req: Request, res: Response) => {
   const find: {
     deleted: boolean;

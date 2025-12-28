@@ -56,6 +56,14 @@ router.patch(
   productController.editPatch
 );
 
+router.patch("/delete/:id", productController.deletePatch);
+
+router.get("/trash", productController.trash);
+
+router.patch("/undo/:id", productController.undoPatch);
+
+router.delete("/destroy/:id", productController.destroyDelete);
+
 router.get("/attribute", productController.attribute);
 
 router.get("/attribute/create", productController.createAttribute);
