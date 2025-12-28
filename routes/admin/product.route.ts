@@ -95,4 +95,6 @@ router.delete(
   productController.destroyAttributeDelete
 );
 
+router.get("/export/csv", productController.exportCSV);
+
 export default router;

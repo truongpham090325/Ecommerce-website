@@ -12,12 +12,15 @@ block main
               h4.card-title #{pageTitle}
             // end col
             .col-auto
+              a.btn.btn-info.me-1(href=`/${pathAdmin}/product/export/csv`)
+                i.fa-solid.fa-download.me-1
+                | Xuất Excel
               a.btn.btn-danger.me-1(
                   href=`/${pathAdmin}/product/trash`
                   )
                   i.fa-solid.fa-trash.me-1
                   | Thùng rác
-              a.btn.btn-primary(
+              a.btn.btn-primary.my-1(
                 href=`/${pathAdmin}/product/create`
                 )
                 i.fa-solid.fa-plus.me-1
