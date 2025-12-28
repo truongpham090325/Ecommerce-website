@@ -341,6 +341,8 @@ export const createPost = async (req: Request, res: Response) => {
 
     req.body.variants = JSON.parse(req.body.variants);
 
+    req.body.tags = JSON.parse(req.body.tags);
+
     const newRecord = new Product(req.body);
     await newRecord.save();
 
