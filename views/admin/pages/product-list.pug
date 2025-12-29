@@ -33,6 +33,19 @@ block main
           .row
             .col-lg-6
               +form-search()
+            .col-lg-6
+              form.input-group.mb-3(
+                id="formImportExcel"
+                data-api=`/${pathAdmin}/product/import/csv`
+              )
+                input(
+                  class="form-control" 
+                  type="file" 
+                  name="file" 
+                  id="file"
+                  accept=".csv"
+                )
+                button.btn.btn-secondary Nhúng Excel
           .table-responsive
             table.table.table-striped.mb-0
               thead.table-light
