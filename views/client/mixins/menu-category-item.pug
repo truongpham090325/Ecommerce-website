@@ -6,7 +6,7 @@ mixin renderCategory(items, level = 0)
     else if (level == 1) ulClass = "menu_cat_droapdown";
     else ulClass = "sub_category";
 
-  ul(class=ulClass)
+  ul(class=ulClass id="collapseMenuMain")
     each item in items
       if (item.status == "active")
         li
@@ -27,3 +27,4 @@ mixin renderCategory(items, level = 0)
         a(href="#")
           | Xem Tất Cả
           i.far.fa-arrow-right
+
