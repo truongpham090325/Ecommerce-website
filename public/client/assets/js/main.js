@@ -17,3 +17,14 @@ if (pagination) {
   });
 }
 // End pagination
+
+// button-share
+const listButtonShare = document.querySelectorAll("[button-share]");
+if (listButtonShare.length > 0) {
+  listButtonShare.forEach((button) => {
+    button.addEventListener("click", () => {
+      button.href = button.href + window.location.href;
+    });
+  });
+}
+// End button-share
