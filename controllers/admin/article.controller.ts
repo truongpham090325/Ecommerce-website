@@ -5,6 +5,7 @@ import slugify from "slugify";
 import { pathAdmin } from "../../configs/variable.config";
 import Blog from "../../models/blog.model";
 import { logAdminAction } from "../../helpers/log.heper";
+import { RequestAccount } from "../../interfaces/request.interface";
 
 export const category = async (req: Request, res: Response) => {
   const find: {
@@ -296,7 +297,7 @@ export const create = async (req: Request, res: Response) => {
   });
 };
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: RequestAccount, res: Response) => {
   try {
     const existSlug = await Blog.findOne({
       slug: req.body.slug,
@@ -320,6 +321,8 @@ export const createPost = async (req: Request, res: Response) => {
     if (req.body.status == "published") {
       req.body.publishAt = new Date();
     }
+
+    req.body.createdBy = req.adminId;
 
     const newRecord = new Blog(req.body);
     await newRecord.save();
@@ -417,7 +420,7 @@ export const edit = async (req: Request, res: Response) => {
   }
 };
 
-export const editPatch = async (req: Request, res: Response) => {
+export const editPatch = async (req: RequestAccount, res: Response) => {
   try {
     const id = req.params.id;
 
@@ -457,6 +460,8 @@ export const editPatch = async (req: Request, res: Response) => {
     if (req.body.status == "published") {
       req.body.publishAt = new Date();
     }
+
+    req.body.updatedBy = req.adminId;
 
     await Blog.updateOne(
       {
