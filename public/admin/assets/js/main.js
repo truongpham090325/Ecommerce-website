@@ -647,7 +647,8 @@ if (formGroupFile) {
   const previewFile = formGroupFile.querySelector("[preview-file]");
 
   inputFile.addEventListener("input", () => {
-    const value = inputFile.value;
+    let value = JSON.parse(inputFile.value);
+    console.log(value);
     previewFile.querySelector("img").src = `${domainCDN}${value}`;
   });
 

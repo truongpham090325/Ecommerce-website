@@ -8,6 +8,10 @@ const schema = new mongoose.Schema(
     category: [String],
     priceOld: Number,
     priceNew: Number,
+    discount: {
+      type: Number,
+      default: 0,
+    },
     stock: Number,
     images: [String],
     attributes: Array,
