@@ -44,12 +44,38 @@ export const productByCategory = async (req: Request, res: Response) => {
   };
   // Hết Phân trang
 
+  // Sắp xếp
+  const sort: any = {};
+  if (req.query.sort) {
+    const [sortKey, sortValue] = `${req.query.sort}`.split("-");
+    switch (sortKey) {
+      case "position":
+        sort.position = sortValue;
+        break;
+      case "price":
+        sort.priceNew = sortValue;
+        sort.position = sortValue;
+        break;
+      case "createdAt":
+        sort.createdAt = sortValue;
+        break;
+      case "discount":
+        sort.discount = sortValue;
+        sort.position = sortValue;
+        break;
+      default:
+        sort.position = sortValue;
+        break;
+    }
+  } else {
+    sort.position = "desc";
+  }
+  // Hết sắp xếp
+
   const productList: any = await Product.find(find)
     .limit(limitItems)
     .skip(skip)
-    .sort({
-      position: "desc",
-    });
+    .sort(sort);
 
   for (const item of productList) {
     item.discount = Math.floor(
