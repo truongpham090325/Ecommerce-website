@@ -14,13 +14,42 @@ export const productByCategory = async (req: Request, res: Response) => {
     return;
   }
 
-  const productList: any = await Product.find({
+  const find: {
+    category: string;
+    deleted: boolean;
+    status: string;
+  } = {
     deleted: false,
     status: "active",
     category: categoryDetail.id,
-  }).sort({
-    position: "desc",
-  });
+  };
+
+  // Phân trang
+  const limitItems = 12;
+  let page = 1;
+  if (req.query.page) {
+    const currentPage = parseInt(`${req.query.page}`);
+    if (currentPage > 0) {
+      page = currentPage;
+    }
+  }
+  const totalRecord = await Product.countDocuments(find);
+  const totalPage = Math.ceil(totalRecord / limitItems);
+  const skip = (page - 1) * limitItems;
+  const pagination = {
+    totalPage: totalPage,
+    currentPage: page,
+    totalRecord: totalRecord,
+    skip: skip,
+  };
+  // Hết Phân trang
+
+  const productList: any = await Product.find(find)
+    .limit(limitItems)
+    .skip(skip)
+    .sort({
+      position: "desc",
+    });
 
   for (const item of productList) {
     item.discount = Math.floor(
@@ -45,5 +74,6 @@ export const productByCategory = async (req: Request, res: Response) => {
     pageTitle: categoryDetail.name,
     categoryDetail: categoryDetail,
     productList: productList,
+    pagination: pagination,
   });
 };
