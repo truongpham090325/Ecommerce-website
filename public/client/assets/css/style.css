@@ -7795,7 +7795,7 @@ footer {
 
 .sidebar_category ul,
 .sidebar_color ul {
-  max-height: 245px;
+  max-height: 150px;
   overflow: hidden;
   overflow-y: auto;
 }

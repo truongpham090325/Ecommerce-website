@@ -28,6 +28,7 @@ export const productByCategory = async (req: Request, res: Response) => {
     stock?: {
       $gt: number;
     };
+    $or?: any;
   } = {
     deleted: false,
     status: "active",
@@ -61,6 +62,35 @@ export const productByCategory = async (req: Request, res: Response) => {
     };
   }
   // Hết còn hàng
+
+  // Thuộc tính
+  const attributeFilters: any[] = [];
+
+  Object.keys(req.query).forEach((key) => {
+    if (key.startsWith("attribute_")) {
+      const attrId = key.replace("attribute_", "");
+      const values = `${req.query[key]}`.split(",");
+
+      attributeFilters.push({
+        variants: {
+          $elemMatch: {
+            status: true,
+            attributeValue: {
+              $elemMatch: {
+                attrId: attrId,
+                value: { $in: values },
+              },
+            },
+          },
+        },
+      });
+
+      if (attributeFilters.length > 0) {
+        find.$or = attributeFilters;
+      }
+    }
+  });
+  // Hết Thuộc tính
 
   // Phân trang
   const limitItems = 12;
