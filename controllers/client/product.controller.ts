@@ -18,11 +18,27 @@ export const productByCategory = async (req: Request, res: Response) => {
     category: string;
     deleted: boolean;
     status: string;
+    priceNew?: {
+      $gte: number;
+      $lte: number;
+    };
   } = {
     deleted: false,
     status: "active",
     category: categoryDetail.id,
   };
+
+  // Mức giá
+  if (req.query.price) {
+    const [priceMin, priceMax] = `${req.query.price}`
+      .split("-")
+      .map((item) => parseInt(item));
+    find.priceNew = {
+      $gte: priceMin,
+      $lte: priceMax,
+    };
+  }
+  // Hết Mức giá
 
   // Phân trang
   const limitItems = 12;
