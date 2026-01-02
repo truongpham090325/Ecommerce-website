@@ -3,6 +3,174 @@ import CategoryProduct from "../../models/category-product.model";
 import Product from "../../models/product.model";
 import slugify from "slugify";
 
+export const category = async (req: Request, res: Response) => {
+  const find: {
+    deleted: boolean;
+    status: string;
+    priceNew?: {
+      $gte: number;
+      $lte: number;
+    };
+    discount?: {
+      $gt: number;
+    };
+    stock?: {
+      $gt: number;
+    };
+    $or?: any;
+    search?: RegExp;
+  } = {
+    deleted: false,
+    status: "active",
+  };
+
+  // Từ khóa
+  if (req.query.keyword) {
+    const keyword = slugify(`${req.query.keyword}`, {
+      replacement: " ",
+      lower: true,
+    });
+    const keywordRegex = new RegExp(keyword, "i");
+    find.search = keywordRegex;
+  }
+  // Hết Từ khóa
+
+  // Mức giá
+  if (req.query.price) {
+    const [priceMin, priceMax] = `${req.query.price}`
+      .split("-")
+      .map((item) => parseInt(item));
+    find.priceNew = {
+      $gte: priceMin,
+      $lte: priceMax,
+    };
+  }
+  // Hết Mức giá
+
+  // Đang giảm giá
+  if (req.query.onSale && req.query.onSale == "true") {
+    find.discount = {
+      $gt: 0,
+    };
+  }
+  // Hết Đang giảm giá
+
+  // Còn hàng
+  if (req.query.inStock && req.query.inStock == "true") {
+    find.stock = {
+      $gt: 0,
+    };
+  }
+  // Hết còn hàng
+
+  // Thuộc tính
+  const attributeFilters: any[] = [];
+
+  Object.keys(req.query).forEach((key) => {
+    if (key.startsWith("attribute_")) {
+      const attrId = key.replace("attribute_", "");
+      const values = `${req.query[key]}`.split(",");
+
+      attributeFilters.push({
+        variants: {
+          $elemMatch: {
+            status: true,
+            attributeValue: {
+              $elemMatch: {
+                attrId: attrId,
+                value: { $in: values },
+              },
+            },
+          },
+        },
+      });
+
+      if (attributeFilters.length > 0) {
+        find.$or = attributeFilters;
+      }
+    }
+  });
+  // Hết Thuộc tính
+
+  // Phân trang
+  const limitItems = 12;
+  let page = 1;
+  if (req.query.page) {
+    const currentPage = parseInt(`${req.query.page}`);
+    if (currentPage > 0) {
+      page = currentPage;
+    }
+  }
+  const totalRecord = await Product.countDocuments(find);
+  const totalPage = Math.ceil(totalRecord / limitItems);
+  const skip = (page - 1) * limitItems;
+  const pagination = {
+    totalPage: totalPage,
+    currentPage: page,
+    totalRecord: totalRecord,
+    skip: skip,
+  };
+  // Hết Phân trang
+
+  // Sắp xếp
+  const sort: any = {};
+  if (req.query.sort) {
+    const [sortKey, sortValue] = `${req.query.sort}`.split("-");
+    switch (sortKey) {
+      case "position":
+        sort.position = sortValue;
+        break;
+      case "price":
+        sort.priceNew = sortValue;
+        sort.position = sortValue;
+        break;
+      case "createdAt":
+        sort.createdAt = sortValue;
+        break;
+      case "discount":
+        sort.discount = sortValue;
+        sort.position = sortValue;
+        break;
+      default:
+        sort.position = sortValue;
+        break;
+    }
+  } else {
+    sort.position = "desc";
+  }
+  // Hết sắp xếp
+
+  const productList: any = await Product.find(find)
+    .limit(limitItems)
+    .skip(skip)
+    .sort(sort);
+
+  for (const item of productList) {
+    item.discount = Math.floor(
+      ((item.priceOld - item.priceNew) / item.priceOld) * 100
+    );
+
+    // Màu sắc
+    const colorSet = new Set();
+    item.variants
+      .filter((variant: any) => variant.status)
+      .forEach((variant: any) => {
+        variant.attributeValue.forEach((attr: any) => {
+          if (attr.attrType == "color") {
+            colorSet.add(attr.value);
+          }
+        });
+      });
+    item.colorList = [...colorSet];
+  }
+
+  res.render("client/pages/product-category", {
+    pageTitle: "Tất cả sản phẩm",
+    productList: productList,
+    pagination: pagination,
+  });
+};
+
 export const productByCategory = async (req: Request, res: Response) => {
   const slug = req.params.slug;
   let categoryDetail: any = null;
