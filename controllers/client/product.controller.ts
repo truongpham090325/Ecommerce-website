@@ -465,12 +465,27 @@ export const detail = async (req: Request, res: Response) => {
   for (const item of relatedProducts) {
     formatProductItem(item);
   }
-  // Hết Sản phẩm liên quan
+  // Hết sản phẩm liên quan
+
+  // Sản phẩm mua kèm
+  const boughtTogetherProducts: any = await Product.find({
+    _id: { $in: productDetail.boughtTogether },
+    deleted: false,
+    status: "active",
+  }).sort({
+    position: "desc",
+  });
+
+  for (const item of boughtTogetherProducts) {
+    formatProductItem(item);
+  }
+  // Hết Sản phẩm mua kèm
 
   res.render("client/pages/product-detail", {
     pageTitle: productDetail.name,
     productDetail: productDetail,
     attributeList: attributeList,
     relatedProducts: relatedProducts,
+    boughtTogetherProducts: boughtTogetherProducts,
   });
 };
